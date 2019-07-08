@@ -3,7 +3,6 @@ logs
 *.log
 .DS_Store
 .env
-*.lock
 
 npm-debug.log*
 
