@@ -7,13 +7,9 @@
     "dev": "nodemon --watch src --exec babel-node ./src/index.js",
     "pretest": "NODE_ENV=test babel-node ./src/test/migrate.js",
     "test": "jest --no-cache  --detectOpenHandles --runInBand --forceExit",
-    "build": "NODE_ENV=PRODUCTION babel src -d dist --copy-files",
+    "build": "NODE_ENV=production babel src -d dist --copy-files",
     "start": "NODE_ENV=production node dist/index.js",
     "test:watch": "jest --no-cache  --detectOpenHandles --runInBand --watch"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/CEOehis/ecommerce-shop.git"
   },
   "keywords": [
     "ecommerce",

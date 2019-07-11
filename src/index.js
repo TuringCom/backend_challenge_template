@@ -86,7 +86,7 @@ app.use((err, req, res, next) => {
 });
 
 // configure port and listen for requests
-const port = parseInt(process.env.NODE_ENV === 'test' ? 8378 : process.env.PORT, 10) || 5000;
+const port = parseInt(process.env.NODE_ENV === 'test' ? 8378 : process.env.PORT, 10) || 80;
 export const server = app.listen(port, () => {
   log(`Server is running on http://localhost:${port} `);
 });
