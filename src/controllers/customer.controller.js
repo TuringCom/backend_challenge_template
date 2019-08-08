@@ -66,7 +66,6 @@ class CustomerController {
     try {
       const customer = await Customer.findByPk(customer_id);
       return res.status(400).json({
-        status: true,
         customer,
       });
     } catch (error) {
