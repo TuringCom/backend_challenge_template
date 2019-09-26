@@ -12,7 +12,8 @@ router.get('/products/inDepartment/:department_id', ProductController.getProduct
 router.get('/departments', ProductController.getAllDepartments);
 router.get('/departments/:department_id', ProductController.getDepartment);
 router.get('/categories', ProductController.getAllCategories);
-router.get('/categories/:category_id');
+router.get('/categories/:category_id', ProductController.getSingleCategory);
 router.get('/categories/inDepartment/:department_id', ProductController.getDepartmentCategories);
+router.get('/categories/inProduct/:product_id', ProductController.getProductsByCategory);
 
 export default router;
