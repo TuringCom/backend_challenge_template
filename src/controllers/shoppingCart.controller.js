@@ -18,7 +18,9 @@
  *  endpoints, request body/param, and response object for each of these method
  */
 
- 
+import { Order, OrderDetail, Customer } from '../database/models';
+
+const jwt = require('jsonwebtoken');
 /**
  *
  *
@@ -124,8 +126,24 @@ class ShoppingCartController {
    * @memberof ShoppingCartController
    */
   static async createOrder(req, res, next) {
+    // eslint-disable-next-line camelcase
+    const { cart_id, shipping_id, tax_id } = req.body;
+    const accessToken = req.headers.authorization;
+    const decodedToken = jwt.decode(accessToken.substring(7)); // remove the Bearer tag
+    const customerId = decodedToken.customer_id;
+
     try {
-      // implement code for creating order here
+      const order = await Order.upsert({
+        customer_id: customerId,
+        cart_id,
+        shipping_id,
+        tax_id,
+      });
+      if (order) {
+        const id = await Order.count();
+        return res.status(201).json({ order_id: id });
+      }
+      return res.status(400).json('Could not create the order.');
     } catch (error) {
       return next(error);
     }
@@ -142,8 +160,28 @@ class ShoppingCartController {
    */
   static async getCustomerOrders(req, res, next) {
     const { customer_id } = req;  // eslint-disable-line
+    const accessToken = req.headers.authorization;
+    const decodedToken = jwt.decode(accessToken.substring(7)); // remove the Bearer tag
+    const customerId = decodedToken.customer_id;
     try {
-      // implement code to get customer order
+      const orders = await Order.findAll({
+        where: {
+          customer_id: customerId,
+        },
+        include: [
+          {
+            model: Customer,
+            as: 'name',
+            attributes: ['name'],
+          },
+        ],
+        raw: true,
+        attributes: ['order_id', 'total_amount', 'created_on', 'shipped_on'],
+      });
+      if (orders) {
+        return res.status(200).json(orders);
+      }
+      return res.status(400).json('You have not yet placed an order. ');
     } catch (error) {
       return next(error);
     }
@@ -160,9 +198,50 @@ class ShoppingCartController {
    */
   static async getOrderSummary(req, res, next) {
     const { order_id } = req.params;  // eslint-disable-line
-    const { customer_id } = req;   // eslint-disable-line
     try {
-      // write code to get order summary
+      const order = await OrderDetail.findByPk(order_id);
+      if (order) {
+        return res.status(200).json({
+          order_id,
+          order_items: order,
+        });
+      }
+      return res.status(404).json('The order does not exist');
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+    /**
+   *
+   *
+   * @static
+   * @param {obj} req express request object
+   * @param {obj} res express response object
+   * @returns {json} returns json response with short details of order
+   * @memberof ShoppingCartController
+   */
+  static async getOrderShortDetail(req, res, next) {
+    // eslint-disable-next-line camelcase
+    const { order_id } = req.params;
+    try {
+      const orders = await Order.findOne({
+        where: {
+          order_id,
+        },
+        include: [
+          {
+            model: Customer,
+            attributes: ['name'],
+          },
+        ],
+        raw: true,
+        attributes: ['order_id', 'total_amount', 'created_on', 'shipped_on', 'status'],
+      });
+      if (orders) {
+        return res.status(200).json(orders);
+      }
+      return res.status(400).json('You have not yet placed an order. ');
     } catch (error) {
       return next(error);
     }
