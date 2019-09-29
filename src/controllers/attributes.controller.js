@@ -112,7 +112,7 @@ class AttributeController {
           },
         });
         if (productAttribute) {
-          productAttributes.push(productAttribute)
+          productAttributes.push(productAttribute);
         }
       }
       return res.status(200).json(productAttributes);
