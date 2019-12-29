@@ -13,7 +13,6 @@ import router from './routes';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-
 const app = express();
 const corsOptions = {
   credentials: true,
@@ -21,7 +20,6 @@ const corsOptions = {
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 app.use(cors(corsOptions));
-
 
 // compression and header security middleware
 app.use(compression());

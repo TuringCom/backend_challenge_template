@@ -2,7 +2,7 @@
  * The Product controller contains all static methods that handles product request
  * Some methods work fine, some needs to be implemented from scratch while others may contain one or two bugs
  * The static methods and their function include:
- * 
+ *
  * - getAllProducts - Return a paginated list of products
  * - searchProducts - Returns a list of product that matches the search query string
  * - getProductsByCategory - Returns all products in a product category
@@ -13,7 +13,7 @@
  * - getAllCategories - Returns all categories
  * - getSingleCategory - Returns a single category
  * - getDepartmentCategories - Returns all categories in a department
- * 
+ *
  *  NB: Check the BACKEND CHALLENGE TEMPLATE DOCUMENTATION in the readme of this repository to see our recommended
  *  endpoints, request body/param, and response object for each of these method
  */
@@ -46,7 +46,7 @@ class ProductController {
    */
   static async getAllProducts(req, res, next) {
     const { query } = req;
-    const { page, limit, offset } = query
+    const { page, limit, offset } = query;
     const sqlQueryMap = {
       limit,
       offset,
@@ -90,7 +90,6 @@ class ProductController {
    * @memberof ProductController
    */
   static async getProductsByCategory(req, res, next) {
-
     try {
       const { category_id } = req.params; // eslint-disable-line
       const products = await Product.findAndCountAll({
@@ -137,7 +136,6 @@ class ProductController {
    * @memberof ProductController
    */
   static async getProduct(req, res, next) {
-
     const { product_id } = req.params;  // eslint-disable-line
     try {
       const product = await Product.findByPk(product_id, {
@@ -200,7 +198,7 @@ class ProductController {
         error: {
           status: 404,
           message: `Department with id ${department_id} does not exist`,  // eslint-disable-line
-        }
+        },
       });
     } catch (error) {
       return next(error);

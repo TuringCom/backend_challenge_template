@@ -1,18 +1,21 @@
 /**
  * Customer controller handles all requests that has to do with customer
  * Some methods needs to be implemented from scratch while others may contain one or two bugs
- * 
+ *
  * - create - allow customers to create a new account
  * - login - allow customers to login to their account
  * - getCustomerProfile - allow customers to view their profile info
  * - updateCustomerProfile - allow customers to update their profile info like name, email, password, day_phone, eve_phone and mob_phone
  * - updateCustomerAddress - allow customers to update their address info
  * - updateCreditCard - allow customers to update their credit card number
- * 
+ *
  *  NB: Check the BACKEND CHALLENGE TEMPLATE DOCUMENTATION in the readme of this repository to see our recommended
  *  endpoints, request body/param, and response object for each of these method
  */
 import { Customer } from '../database/models';
+import Authorization from '../middleware/Authorization.middleware';
+
+const { hashPassword, generateToken } = Authorization;
 
 /**
  *
@@ -30,9 +33,35 @@ class CustomerController {
    * @returns {json} json object with status, customer data and access token
    * @memberof CustomerController
    */
-  static async create(req, res, next) {
+  static async create(req, res) {
     // Implement the function to create the customer account
-    return res.status(201).json({ message: 'this works' });
+    try {
+      const { email, password } = req.body;
+
+      const foundCustomer = await Customer.findOne({
+        where: {
+          email,
+        },
+      });
+
+      if (foundCustomer) {
+        return res.status(409).json({ status: 409, error: 'Customer already exists' });
+      }
+
+      const hash = hashPassword(password);
+      const newCustomer = await Customer.create({ ...req.body, password: hash });
+
+      const payload = {
+        email,
+      };
+
+      const token = generateToken(payload);
+      const data = { token, ...newCustomer.get() };
+
+      return res.status(201).json({ data, message: 'this works' });
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   /**

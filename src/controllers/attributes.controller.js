@@ -2,7 +2,7 @@
  * The controller defined below is the attribute controller, highlighted below are the functions of each static method
  * in the controller
  *  Some methods needs to be implemented from scratch while others may contain one or two bugs
- * 
+ *
  * - getAllAttributes - This method should return an array of all attributes
  * - getSingleAttribute - This method should return a single attribute using the attribute_id in the request parameter
  * - getAttributeValues - This method should return an array of all attribute values of a single attribute using the attribute id
